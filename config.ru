@@ -9,20 +9,22 @@ COMMANDS = [
 ]
 
 commands = Hash[COMMANDS.map { |cmd| [cmd, `#{cmd}`.chop] }]
+html = ERB.new(File.read("index.html.erb")).result(binding)
+json = JSON.pretty_generate(commands)
+css = File.read("style.css")
 
 run ->(env) {
 
   case env["PATH_INFO"]
 
-  when "/"
-    template = File.read("index.html.erb")
-    response 200, "text/html", ERB.new(template).result(binding)
+  when "/" then
+    response 200, "text/html", html
 
   when "/index.json"
-    response 200, "text/json", JSON.pretty_generate(commands)
+    response 200, "text/json", json
 
   when "/style.css"
-    response 200, "text/css", File.read("style.css")
+    response 200, "text/css", css
 
   else
     response 404, "text/plain", "404: Not Found"
