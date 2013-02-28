@@ -1,41 +1,36 @@
 require "erb"
 require "json"
 
+COMMANDS = [
+  "ruby --version",
+  "gem --version",
+  "bundle --version",
+  "cat Gemfile",
+]
+
+commands = Hash[COMMANDS.map { |cmd| [cmd, `#{cmd}`.chop] }]
+
 run ->(env) {
 
-  COMMANDS = [
-    "ruby --version",
-    "gem --version",
-    "bundle --version",
-    "cat Gemfile",
-  ]
-
-  commands = Hash[
-    COMMANDS.map { |cmd| [cmd, `#{cmd}`.chop] }
-  ]
-
   case env["PATH_INFO"]
+
   when "/"
-    [
-      200,
-      {"Content-Type" => "text/html"},
-      [ERB.new(File.read("index.html.erb")).result(binding)]
-    ]
-  when "/style.css"
-    [
-      200,
-      {"Content-Type" => "text/css"},
-      [File.read("style.css")]
-    ]
+    template = File.read("index.html.erb")
+    response 200, "text/html", ERB.new(template).result(binding)
+
   when "/index.json"
-    [
-      200,
-      {"Content-Type" => "text/json"},
-      [JSON.pretty_generate(commands)]
-    ]
+    response 200, "text/json", JSON.pretty_generate(commands)
+
+  when "/style.css"
+    response 200, "text/css", File.read("style.css")
+
   else
-    [404, {"Content-Type" => "text/plain"}, ["404: Not Found"]]
+    response 404, "text/plain", "404: Not Found"
+
   end
 
-
 }
+
+def response(status, content_type, body)
+  [status, {"Content-Type" => content_type}, [body]]
+end
