@@ -11,7 +11,7 @@ run ->(env) {
   ]
 
   commands = Hash[
-    COMMANDS.map { |cmd| [cmd, `#{cmd}`] }
+    COMMANDS.map { |cmd| [cmd, `#{cmd}`.chop] }
   ]
 
   case env["PATH_INFO"]
