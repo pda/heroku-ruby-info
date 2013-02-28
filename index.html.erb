@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Heroku Ruby Inspector</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+  </head>
+  <body>
+
+  <% commands.each_pair do |command, output| %>
+    <div class="command">
+      <h2>$ <%= command %></h2>
+      <pre><%= output %></pre>
+    </div>
+  <% end %>
+
+    <div class="credits">
+      <a href="/index.json">JSON version</a>
+      |
+      <a href="https://github.com/pda/heroku-ruby-info">On GitHub</a>
+      |
+      Created by <a href="https://twitter.com/pda">@pda</a>.
+    </div>
+  </body>
+</html>
